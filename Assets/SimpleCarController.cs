@@ -6,12 +6,15 @@ public class SimpleCarController : MonoBehaviour {
     public List<AxleInfo> axleInfos; // the information about each individual axle
     public float maxMotorTorque; // maximum torque the motor can apply to wheel
     public float maxSteeringAngle; // maximum steer angle the wheel can have
+    public GameObject frontLeftWheelModel, frontRightWheelModel; // references to wheel models for turning them
     private bool firstLaunch = true;
+    private float steering = 0;
         
     public void FixedUpdate()
     {
         float motor = maxMotorTorque * Input.GetAxis("Vertical");
-        float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
+        float pastSteering = steering;
+        steering = maxSteeringAngle * Input.GetAxis("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Tab) || firstLaunch)
         {
@@ -100,7 +103,7 @@ public class SimpleCarController : MonoBehaviour {
                                 wh.GetComponent<WheelCollider>().forwardFriction = ff;
                             }
                             break;
-                        case "wheelForwardAsimptoteSlip":
+                        case "wheelForwardAsymptoteSlip":
                             foreach (GameObject wh in wheels)
                             {
                                 WheelFrictionCurve ff = wh.GetComponent<WheelCollider>().forwardFriction;
@@ -108,7 +111,7 @@ public class SimpleCarController : MonoBehaviour {
                                 wh.GetComponent<WheelCollider>().forwardFriction = ff;
                             }
                             break;
-                        case "wheelForwardAsimptoteValue":
+                        case "wheelForwardAsymptoteValue":
                             foreach (GameObject wh in wheels)
                             {
                                 WheelFrictionCurve ff = wh.GetComponent<WheelCollider>().forwardFriction;
@@ -140,7 +143,7 @@ public class SimpleCarController : MonoBehaviour {
                                 wh.GetComponent<WheelCollider>().sidewaysFriction = sf;
                             }
                             break;
-                        case "wheelSidewaysAsimptoteSlip":
+                        case "wheelSidewaysAsymptoteSlip":
                             foreach (GameObject wh in wheels)
                             {
                                 WheelFrictionCurve sf = wh.GetComponent<WheelCollider>().sidewaysFriction;
@@ -148,7 +151,7 @@ public class SimpleCarController : MonoBehaviour {
                                 wh.GetComponent<WheelCollider>().sidewaysFriction = sf;
                             }
                             break;
-                        case "wheelSidewaysAsimptoteValue":
+                        case "wheelSidewaysAsymptoteValue":
                             foreach (GameObject wh in wheels)
                             {
                                 WheelFrictionCurve sf = wh.GetComponent<WheelCollider>().sidewaysFriction;
@@ -185,6 +188,11 @@ public class SimpleCarController : MonoBehaviour {
                     case "angularDrag":
                         car.GetComponent<Rigidbody>().angularDrag = float.Parse(values[1]);
                         break;    
+                    case "centerOfMass":
+                        Vector3 com = car.GetComponent<Rigidbody>().centerOfMass;
+                        com.y -= float.Parse(values[1]);
+                        car.GetComponent<Rigidbody>().centerOfMass = com;
+                        break;
                 }
             }
         }
@@ -199,6 +207,18 @@ public class SimpleCarController : MonoBehaviour {
                 axleInfo.rightWheel.motorTorque = motor;
             }
         }
+
+    // gameObj.transform.eulerAngles = new Vector3(
+    //     gameObj.transform.eulerAngles.x,
+    //     gameObj.transform.eulerAngles.y + 180,
+    //     gameObj.transform.eulerAngles.z
+    // );
+
+        print(steering);
+        frontLeftWheelModel.transform.RotateAround(frontLeftWheelModel.GetComponent<MeshCollider>().bounds.center, Vector3.up, steering - pastSteering);
+        frontRightWheelModel.transform.RotateAround(frontRightWheelModel.GetComponent<MeshCollider>().bounds.center, Vector3.up, steering - pastSteering);
+        // frontLeftWheelModel.transform.eulerAngles = new Vector3(0, steering - 90, 0);
+        // frontRightWheelModel.transform.eulerAngles = new Vector3(0, steering - 90, 0);
     }
 }
     
