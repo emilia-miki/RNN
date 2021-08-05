@@ -21,9 +21,7 @@ public class SimpleCarController : MonoBehaviour {
             firstLaunch = false;
             GameObject car = GameObject.FindWithTag("car");
             string[] attributes = System.IO.File.ReadAllLines("car.cfg");
-            
             string[] values;
-            print("Attributes updated");
             
             foreach (string attr in attributes)
             {
@@ -208,17 +206,8 @@ public class SimpleCarController : MonoBehaviour {
             }
         }
 
-    // gameObj.transform.eulerAngles = new Vector3(
-    //     gameObj.transform.eulerAngles.x,
-    //     gameObj.transform.eulerAngles.y + 180,
-    //     gameObj.transform.eulerAngles.z
-    // );
-
-        print(steering);
         frontLeftWheelModel.transform.RotateAround(frontLeftWheelModel.GetComponent<MeshCollider>().bounds.center, Vector3.up, steering - pastSteering);
         frontRightWheelModel.transform.RotateAround(frontRightWheelModel.GetComponent<MeshCollider>().bounds.center, Vector3.up, steering - pastSteering);
-        // frontLeftWheelModel.transform.eulerAngles = new Vector3(0, steering - 90, 0);
-        // frontRightWheelModel.transform.eulerAngles = new Vector3(0, steering - 90, 0);
     }
 }
     
